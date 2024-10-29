@@ -1,0 +1,242 @@
+html {
+  font-family: Lato, sans-serif;
+}
+
+:-webkit-any-link {
+  color: white;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+}
+
+body {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.user-welcome {
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 24px;
+}
+
+.navbar {
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 24px;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-brand img {
+  margin-right: 20px;
+  height: 80px;
+  width: 80px;
+}
+
+.company-title {
+  width: 400px;
+  margin-left: 50px;
+}
+
+.navbar-navigation {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  color: inherit;
+}
+
+.navbar-navigation-items {
+  margin-left: 50px;
+}
+
+.navbar-link {
+  text-decoration: none;
+  color: #5c6b70 !important;
+  font-size: 15px;
+}
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.main_title {
+  text-align: center;
+  font-style: bold;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+
+.form-input {
+  width: 100%;
+  margin: 8px;
+  font-style: bold;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 10px;
+  font-style: bold;
+}
+
+.title-textarea {
+  width: 500px;
+  height: 30px;
+  font-size: 18px;
+  padding: none;
+  border: solid 1px;
+  border-color: #18c1e1;
+  border-radius: 5px;
+  background-color: #f3f6f6;
+  margin-bottom: 10px;
+}
+
+.content-textarea {
+  width: inherit;
+  height: 400px;
+  font-size: 18px;
+  padding: none;
+  border: solid 1px;
+  border-color: #18c1e1;
+  border-radius: 5px;
+  background-color: #f3f6f6;
+  margin-bottom: 10px;
+}
+
+.form-submit,
+.logout {
+  background-color: black;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+.form-submit:hover {
+  background-color: #18c1e1;
+}
+
+.recent-posts {
+  height: 200px;
+  overflow: auto;
+}
+
+.entry {
+  margin-top: 10px;
+  border: 0.5px;
+  border-color: #323f43;
+  border-radius: 5px;
+}
+
+.entry-title {
+  display: inline;
+  font-size: 18px;
+}
+
+.entry-date {
+  color: #5c6b70;
+}
+
+.entry-content {
+  font-size: 16px;
+  line-height: 150%;
+}
+.footer {
+  background-color: #323f43;
+  padding: 40px 0;
+  margin: 50px 0 0 0;
+  border-top: 4px solid black;
+  color: white;
+  font-size: 12px;
+}
+
+.footer-content {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+}
+
+.footer .left {
+  flex-grow: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer .right {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  margin-left: 50px;
+}
+
+.footer-item {
+  margin-bottom: 5px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer-item:hover {
+  text-decoration: underline;
+}
+
+#signup-button,
+#login-button {
+  font-size: 15px;
+}
+
+.signup-page,
+.login-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+}
+
+#signup-text,
+#login-text {
+  text-align: center;
+}
+
+.signup-form,
+.login-form {
+  padding-top: 40px;
+}
+
+.test {
+  text-align: center;
+}
+
+#login-option {
+  border: solid 2px black;
+  color: #18c1e1;
+  background-color: black;
+  border-radius: 5px;
+}

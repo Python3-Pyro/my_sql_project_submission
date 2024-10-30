@@ -153,13 +153,14 @@ body {
 .entry-title {
   display: inline;
   font-size: 18px;
+  background-color: black;
 }
 
 .entry-date {
   color: #5c6b70;
 }
 
-.entry-content {
+.entry-email {
   font-size: 16px;
   line-height: 150%;
 }
@@ -239,4 +240,10 @@ body {
   color: #18c1e1;
   background-color: black;
   border-radius: 5px;
+}
+
+#post-content {
+  border: solid 0.5px #18c1e1;
+  border-radius: 5px;
+  height: auto;
 }

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Lato"
+    />
+    <title>Post Details</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <section class="signup-page">
+      <div class="navbar-brand">
+        <img
+          src="\static\company-logo.webp"
+          alt="Ficticious-logo"
+          class="logo"
+        />
+        <h1 class="company-title">FICTICIOUS ORG</h1>
+      </div>
+      <div class="post-history">
+        <h3>Post Title: {{ title }}</h3>
+        <h3>Author: {{ email }}</h3>
+        <h3>Posted Date: {{ date }}</h3>
+        <p id="post-content">{{ content }}</p>
+    </section>
+  </body>
+</html>

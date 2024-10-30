@@ -56,10 +56,8 @@ def insert_entry(title, content, email):
             cursor.close()        
         if connection.is_connected():            
             connection.close()
-            print("MySQL connection is closed")
-            
-            
-            
+            print("MySQL connection is closed")    
+       
 # Fetch all blog entries from the database
 def fetch_entries():
     entries = []
@@ -76,7 +74,7 @@ def fetch_entries():
             cursor = connection.cursor()
 
             # Define the query to retrieve data
-            query = "SELECT title, content, email, date FROM entries ORDER BY date DESC"
+            query = "SELECT title, content, email, date, id FROM entries ORDER BY date DESC"
             cursor.execute(query)
             
             # Fetch all rows from the result
@@ -196,6 +194,39 @@ def validate_user(email, password):
         if connection.is_connected():
             connection.close()
 
+# Display a detailed post
+def get_post_by_id(post_id):
+    try:
+        # Connect to the MySQL database
+        connection = mysql.connector.connect(
+            host=os.environ.get("MYSQL_HOST", "localhost"),  # Use environment variable for host
+            user=os.environ.get("MYSQL_USER", "codebind"),  # Use environment variable for user
+            password=os.environ.get("MYSQL_PASSWORD"),  # Use environment variable for password
+            database=os.environ.get("MYSQL_DATABASE", "ficticiousblogs")
+        )
+
+        if connection.is_connected():
+            cursor = connection.cursor()
+
+            # Define the query to fetch the post by ID
+            query = "SELECT title, content, email, date FROM entries WHERE id = %s"
+            cursor.execute(query, (post_id,))
+            
+            # Fetch the result
+            post = cursor.fetchone()
+            return post
+
+    except Error as e:
+        print("Error while connecting to MySQL:", e)
+        return None
+
+    finally:
+        # Close the cursor and connection if they exist
+        if 'cursor' in locals():
+            cursor.close()
+        if connection.is_connected():
+            connection.close()
+
 # Sign-up route
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -259,6 +290,18 @@ def logout():
     session.pop("email", None)
     flash("You have been logged out", "info")
     return redirect(url_for("login"))
+
+@app.route("/post/<int:post_id>")
+def post(post_id):
+    # Fetch the detailed post using the post ID    
+    post = get_post_by_id(post_id)
+    
+    if post:
+        # Render the post details in a template
+        return render_template("post_detail.html", title=post[0], content=post[1], email=post[2], date=post[3])
+    else:
+        flash("Post not found.", "warning")
+        return redirect(url_for("home"))
 
 if __name__ == "__main__":
     app.run(debug=True)

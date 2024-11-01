@@ -3,9 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Lato"
+    />
     <title>Document</title>
     <link rel="stylesheet" href="/static/style.css" />
+    <script src="/static/script.js" defer></script>
   </head>
   <body>
     <header>
@@ -15,44 +19,67 @@
 
         <!-- Logout Button -->
         <form action="{{ url_for('logout') }}" method="POST">
-        <button class="logout" type="submit">Logout</button>
+          <button class="logout" type="submit">Logout</button>
         </form>
       </div>
       <div class="navbar">
-      <div class="navbar-brand">
-        <img src="\static\company-logo.webp" alt="Ficticious-logo" class="logo"/>
-        <h1 class="company-title">FICTICIOUS ORG</h1>
-      </div>
-      <ul class="navbar-navigation">
-        <li class="navbar-navigation-items">
-          <a href="https://en.wikipedia.org/wiki/Technical_support" class="navbar-link">Wikipedia</a>
-        </li>
-        <li class="navbar-navigation-items">
-          <a href="https://www.timeanddate.com/calendar/" class="navbar-link">Learning Calendar</a>
-        </li>
-      </ul>
+        <div class="navbar-brand">
+          <img
+            src="\static\company-logo.webp"
+            alt="Ficticious-logo"
+            class="logo"
+          />
+          <h1 class="company-title">FICTICIOUS ORG</h1>
+        </div>
+        <ul class="navbar-navigation">
+          <li class="navbar-navigation-items">
+            <a
+              href="https://en.wikipedia.org/wiki/Technical_support"
+              class="navbar-link"
+              >Wikipedia</a
+            >
+          </li>
+          <li class="navbar-navigation-items">
+            <a href="https://www.timeanddate.com/calendar/" class="navbar-link"
+              >Learning Calendar</a
+            >
+          </li>
+        </ul>
       </div>
     </header>
     <main class="main">
       <h1 class="main_title">Blog Entry</h1>
+      <section>
         <form class="form" method="POST">
           <p class="form-input">
             <label for="title" class="form-label">Title:</label>
-            <textarea
-              class="title-textarea"
-              name="title"
-              id="title"
-            ></textarea>
+            <textarea class="title-textarea" name="title" id="title">
+{{ title }}</textarea
+            >
           </p>
+
           <!-- <input type="text" name="Sample" id="sample-field" /> -->
           <p class="form-input">
             <label for="content" class="form-label">Content:</label>
-            <textarea
-              class="content-textarea"
-              name="content"
-              id="content"
-            ></textarea>
+            <textarea class="content-textarea" name="content" id="content">
+{{ content }}</textarea
+            >
           </p>
+
+          <input
+            type="hidden"
+            name="generate_content"
+            id="generate_content"
+            value=""
+          />
+
+          <button
+            type="button"
+            class="generate-button"
+            onclick="document.getElementById('generate_content').value='true'; this.form.submit();"
+          >
+            Generate Content
+          </button>
           <!-- <input type="text" name="Sample" id="sample-field" /> -->
           <button class="form-submit" type="submit">Submit</button>
         </form>
@@ -63,7 +90,9 @@
         <article class="entry">
           <div>
             <h2 class="entry-title">
-              <a href="{{ url_for('post', post_id=entry[4]) }}">{{ entry[0] }}</a>
+              <a href="{{ url_for('post', post_id=entry[4]) }}"
+                >{{ entry[0] }}</a
+              >
             </h2>
             <time class="entry-date" datetime="date">{{ entry[3] }}</time>
           </div>

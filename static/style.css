@@ -111,6 +111,18 @@ body {
   margin-bottom: 10px;
 }
 
+.generate-button {
+  top: 100%;
+  left: 15px;
+  margin-top: 5px;
+}
+
+.title-container {
+  /* position: relative; */
+  text-align: left;
+  padding-left: 0px;
+}
+
 .content-textarea {
   width: inherit;
   height: 400px;
@@ -124,7 +136,8 @@ body {
 }
 
 .form-submit,
-.logout {
+.logout,
+.generate-button {
   background-color: black;
   border: none;
   font-size: 18px;

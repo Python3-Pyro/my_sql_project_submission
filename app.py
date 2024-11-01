@@ -1,3 +1,4 @@
+import openai
 import datetime
 import os
 from flask import (
@@ -19,7 +20,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key") 
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
+openai.api_key = os.getenv("OPENAI_API_KEY") 
 
 # Insert a new blog entry into the database
 def insert_entry(title, content, email):
@@ -226,6 +228,22 @@ def get_post_by_id(post_id):
             cursor.close()
         if connection.is_connected():
             connection.close()
+            
+def generate_content_with_openai(title):
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": "You are a blog writer."},
+                {"role": "user", "content": f"Write a 100 word blog post based on the title: '{title}'"}
+            ],
+            max_tokens=800  # Adjust max tokens as needed
+        )
+        content = response.choices[0].message['content']
+        return content
+    except Exception as e:
+        print(f"Error generating content: {e}")
+        return "Error generating content. Please try again."
 
 # Sign-up route
 @app.route("/signup", methods=["GET", "POST"])
@@ -275,15 +293,26 @@ def home():
   if request.method == "POST":
       
     title = request.form.get("title")
-    content = request.form.get("content")
     
-    # Insert entry into MySQL
-    insert_entry(title, content, user_email)
-    
-  # Add entry to in-memory list
-  entries = fetch_entries()
+    # Check if the generate content button was pressed
+    if 'generate_content' in request.form:
+        content = generate_content_with_openai(title)
+    else:
+        content = request.form.get("content")
+        # Insert entry into MySQL
+        insert_entry(title, content, user_email)
         
-  return render_template("index.html", entries=entries, user_email=user_email)
+    # Fetch all entries for display
+    entries = fetch_entries()
+    return render_template("index.html", entries=entries, user_email=user_email, content=content)
+    
+  # Fetch and display entries on GET request
+  entries = fetch_entries()
+  return render_template("index.html", entries=entries, user_email=user_email) 
+    
+  
+        
+  
 
 @app.route("/logout", methods=["POST"])
 def logout():

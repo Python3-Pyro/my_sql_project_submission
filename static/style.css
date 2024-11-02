@@ -13,23 +13,38 @@ html {
 }
 
 body {
+  width: auto;
   box-sizing: border-box;
   margin: 0;
+  background-color: black;
+  color: #f3f6f6;
 }
 
 .user-welcome {
-  max-width: 1200px;
-  margin: 50px auto;
-  padding: 0 20px;
+  width: auto;
+  /* margin: 50px auto; */
+  padding: 20px 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   font-size: 24px;
 }
 
+.url {
+  display: flex;
+  flex-direction: row;
+}
+
+.logout-box,
+.home-box {
+  width: 200px;
+  margin: 20px 0px 20px 20px;
+  text-align: right;
+}
+
 .navbar {
-  max-width: 1200px;
-  margin: 50px auto;
+  width: auto;
+  margin: 0px 0px 50px 0px;
   padding: 0 20px;
   display: flex;
   flex-direction: row;
@@ -44,13 +59,14 @@ body {
 
 .navbar-brand img {
   margin-right: 20px;
-  height: 80px;
-  width: 80px;
+  height: 100px;
+  width: 120px;
 }
 
 .company-title {
-  width: 400px;
-  margin-left: 50px;
+  width: auto;
+  margin-left: none;
+  text-align: center;
 }
 
 .navbar-navigation {
@@ -132,11 +148,9 @@ body {
   border-color: #18c1e1;
   border-radius: 5px;
   background-color: #f3f6f6;
-  margin-bottom: 10px;
 }
 
 .form-submit,
-.logout,
 .generate-button {
   background-color: black;
   border: none;
@@ -145,10 +159,25 @@ body {
   border-radius: 5px;
   color: white;
   cursor: pointer;
+  margin-bottom: 5px;
+  margin-top: none;
 }
 
-.form-submit:hover {
-  background-color: #18c1e1;
+.logout {
+  background-color: black;
+  border: none;
+  font-size: 24px;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  margin-bottom: 5px;
+  margin-top: none;
+}
+
+.form-submit:hover,
+.generate-button:hover,
+.logout:hover {
+  background-color: #6512d6;
 }
 
 .recent-posts {
@@ -259,4 +288,8 @@ body {
   border: solid 0.5px #18c1e1;
   border-radius: 5px;
   height: auto;
+}
+
+#login-option {
+  list-style-type: none;
 }

@@ -11,21 +11,32 @@
     <link rel="stylesheet" href="/static/style.css" />
     <script src="/static/script.js" defer></script>
   </head>
-  <body>
+  <body class="body">
     <header>
       <div class="user-welcome">
         <p>Welcome, {{ user_email }}!</p>
-        <p>You are logged in.</p>
+        <p>Active Session</p>
 
-        <!-- Logout Button -->
-        <form action="{{ url_for('logout') }}" method="POST">
-          <button class="logout" type="submit">Logout</button>
-        </form>
+        <div class="url">
+          <!-- Home Button -->
+          <form class="home-box" action="{{ url_for('home') }}" method="POST">
+            <button class="logout" type="submit">Home</button>
+          </form>
+
+          <!-- Logout Button -->
+          <form
+            class="logout-box"
+            action="{{ url_for('logout') }}"
+            method="POST"
+          >
+            <button class="logout" type="submit">Logout</button>
+          </form>
+        </div>
       </div>
       <div class="navbar">
         <div class="navbar-brand">
           <img
-            src="\static\company-logo.webp"
+            src="\static\ficticious-logo.png"
             alt="Ficticious-logo"
             class="logo"
           />
@@ -36,11 +47,17 @@
             <a
               href="https://en.wikipedia.org/wiki/Technical_support"
               class="navbar-link"
+              target="_blank"
+              rel="noopener noreferrer"
               >Wikipedia</a
             >
           </li>
           <li class="navbar-navigation-items">
-            <a href="https://www.timeanddate.com/calendar/" class="navbar-link"
+            <a
+              href="https://www.timeanddate.com/calendar/"
+              class="navbar-link"
+              target="_blank"
+              rel="noopener noreferrer"
               >Learning Calendar</a
             >
           </li>
@@ -81,7 +98,13 @@
             Generate Content
           </button>
           <!-- <input type="text" name="Sample" id="sample-field" /> -->
-          <button class="form-submit" type="submit">Submit</button>
+          <button
+            type="submit"
+            class="form-submit"
+            onclick="document.getElementById('generate_content').value='';"
+          >
+            Submit
+          </button>
         </form>
       </section>
       <section class="recent-posts">

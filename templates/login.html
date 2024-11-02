@@ -13,7 +13,7 @@
     <section class="login-page">
       <div class="navbar-brand">
         <img
-          src="\static\company-logo.webp"
+          src="\static\ficticious-logo.png"
           alt="Ficticious-logo"
           class="logo"
         />
@@ -42,12 +42,12 @@
         {% with messages = get_flashed_messages(with_categories=true) %} {% if
         messages %}
         <ul id="login-option">
-          {% for category, message in messages %}
+          {% with category, message = messages[-1] %}
           <li class="{{ category }}">
             {{ message }}. First time user?
             <a href="{{ url_for('signup') }}">Sign up</a>
           </li>
-          {% endfor %}
+          {% endwith %}
         </ul>
         {% endif %} {% endwith %}
       </div>

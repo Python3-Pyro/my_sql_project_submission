@@ -1,3 +1,4 @@
+import openai
 import datetime
 import os
 from flask import (
@@ -19,7 +20,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key") 
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
+openai.api_key = os.getenv("OPENAI_API_KEY") 
 
 # Insert a new blog entry into the database
 def insert_entry(title, content, email):
@@ -226,6 +228,22 @@ def get_post_by_id(post_id):
             cursor.close()
         if connection.is_connected():
             connection.close()
+            
+def generate_content_with_openai(title):
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": "You are a technical blog writer."},
+                {"role": "user", "content": f"Write a 200 word blog post based on the title: '{title}'"}
+            ],
+            max_tokens=800  # Adjust max tokens as needed
+        )
+        content = response.choices[0].message['content']
+        return content
+    except Exception as e:
+        print(f"Error generating content: {e}")
+        return "Error generating content. Please try again."
 
 # Sign-up route
 @app.route("/signup", methods=["GET", "POST"])
@@ -271,19 +289,31 @@ def home():
       return redirect(url_for("signup"))
   
   user_email = session["email"]
+  title = ""
+  content = ""
   
-  if request.method == "POST":
-      
-    title = request.form.get("title")
-    content = request.form.get("content")
-    
-    # Insert entry into MySQL
-    insert_entry(title, content, user_email)
-    
-  # Add entry to in-memory list
-  entries = fetch_entries()
+  if request.method == "POST":    
+    # Check if the generate content button was pressed       
+    if request.form.get("generate_content") == "true":
+            title = request.form.get("title")
+            content = generate_content_with_openai(title)
+            entries = fetch_entries()
+            return render_template("index.html", entries=entries, user_email=user_email, content=content, title=title)        
+    else:
+        # Otherwise, treat it as a submission
+        title = request.form.get("title")
+        content = request.form.get("content")
+        # Insert entry into MySQL
+        insert_entry(title, content, user_email)
+        flash("BLog entry submitted successfully", "success")
         
+  # Fetch all entries for display
+  entries = fetch_entries()
   return render_template("index.html", entries=entries, user_email=user_email)
+    
+#   # Fetch and display entries on GET request
+#   entries = fetch_entries()
+#   return render_template("index.html", entries=entries, user_email=user_email) 
 
 @app.route("/logout", methods=["POST"])
 def logout():
@@ -293,12 +323,17 @@ def logout():
 
 @app.route("/post/<int:post_id>")
 def post(post_id):
+    if "email" not in session:
+      return redirect(url_for("signup"))
+  
+    user_email = session["email"]
+    
     # Fetch the detailed post using the post ID    
     post = get_post_by_id(post_id)
     
     if post:
         # Render the post details in a template
-        return render_template("post_detail.html", title=post[0], content=post[1], email=post[2], date=post[3])
+        return render_template("post_detail.html", title=post[0], content=post[1], email=post[2], date=post[3], user_email=user_email)
     else:
         flash("Post not found.", "warning")
         return redirect(url_for("home"))

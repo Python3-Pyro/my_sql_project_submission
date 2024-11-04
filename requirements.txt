@@ -9,3 +9,4 @@ mysql-connector-python==9.1.0
 Werkzeug==3.0.5
 python-dotenv
 openai==0.28.0
+gunicorn

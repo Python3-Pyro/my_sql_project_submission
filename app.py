@@ -12,9 +12,9 @@ from flask import (
     url_for,
 )
     
-import mysql.connector
+# import mysql.connector
 from mysql.connector import Error
-
+import pymssql
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,213 +22,210 @@ load_dotenv()
 def create_app():
     app = Flask(__name__)
     app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
-    openai.api_key = os.getenv("OPENAI_API_KEY") 
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+    
+
+    server = os.environ.get("SERVER")
+    database = os.environ.get("DATABASE")
+    username = os.environ.get("USER")
+    password = os.environ.get("PASSWORD")
+    port = os.environ.get("PORT", "1433")
+    
 
     # Insert a new blog entry into the database
     def insert_entry(title, content, email):
-        try:
-            # Connect to the database
-            connection = mysql.connector.connect(
-                host=os.environ.get("MYSQL_HOST", "localhost"),  # Use environment variable for host
-                user=os.environ.get("MYSQL_USER", "codebind"),  # Use environment variable for user
-                password=os.environ.get("MYSQL_PASSWORD"),  # Use environment variable for password
-                database=os.environ.get("MYSQL_DATABASE", "ficticiousblogs")
+        try:            
+            connection = pymssql.connect(
+                server=f"{server},{port}", 
+                user=username, 
+                password=password, 
+                database=database
             )
 
-            if connection.is_connected():
-                cursor = connection.cursor()
+            cursor = connection.cursor()
 
-                # SQL query to insert data
-                sql_insert_query = """
-                INSERT INTO entries (title, content, email, date)
-                VALUES (%s, %s, %s, NOW())
-                """
-                entry_data = (title, content, email)
+            # SQL query to insert data
+            sql_insert_query = """
+            INSERT INTO entries (title, content, email, date)
+            VALUES (%s, %s, %s, GETDATE())
+            """
+            entry_data = (title, content, email)
 
-                # Execute the query
-                cursor.execute(sql_insert_query, entry_data)
-                connection.commit()
-                print("Entry inserted successfully.")
+            # Execute the query
+            cursor.execute(sql_insert_query, entry_data)
+            connection.commit()
+            print("Entry inserted successfully.")
 
-        except Error as e:
-            print("Error while connecting to MySQL:", e)
+        except pymssql.Error as e:
+            print("Error while connecting to SQL server:", e)
 
         finally:
             # Close the cursor and connection if they exist
             if 'cursor' in locals():
                 cursor.close()        
-            if connection.is_connected():            
+            if connection:            
                 connection.close()
-                print("MySQL connection is closed")    
+                print("SQL server connection is closed")    
         
     # Fetch all blog entries from the database
     def fetch_entries():
         entries = []
         try:
-            # Connect to the MySQL database
-            connection = mysql.connector.connect(
-                host=os.environ.get("MYSQL_HOST", "localhost"),  # Use environment variable for host
-                user=os.environ.get("MYSQL_USER", "codebind"),  # Use environment variable for user
-                password=os.environ.get("MYSQL_PASSWORD"),  # Use environment variable for password
-                database=os.environ.get("MYSQL_DATABASE", "ficticiousblogs")
+            connection = pymssql.connect(
+                server=f"{server},{port}", 
+                user=username, 
+                password=password, 
+                database=database
             )
 
-            if connection.is_connected():
-                cursor = connection.cursor()
+            cursor = connection.cursor()
 
-                # Define the query to retrieve data
-                query = "SELECT title, content, email, date, id FROM entries ORDER BY date DESC"
-                cursor.execute(query)
-                
-                # Fetch all rows from the result
-                entries = cursor.fetchall()
+            # Define the query to retrieve data
+            query = "SELECT title, content, email, date, id FROM entries ORDER BY date DESC"
+            cursor.execute(query)
+            
+            # Fetch all rows from the result
+            entries = cursor.fetchall()
 
-        except Error as e:
-            print("Error while connecting to MySQL:", e)
+        except pymssql.Error as e:
+            print("Error while connecting to SQL server:", e)
 
         finally:
             if 'cursor' in locals():
                 cursor.close()        
-            if connection.is_connected():            
+            if connection:            
                 connection.close()
-                print("MySQL connection is closed")    
+                print("SQL server connection is closed")    
         return entries
 
     # Insert a new user into the users table
     def insert_user(email, password):
-        try:
-            # Connect to the database
-            connection = mysql.connector.connect(
-                host=os.environ.get("MYSQL_HOST", "localhost"),  # Use environment variable for host
-                user=os.environ.get("MYSQL_USER", "codebind"),  # Use environment variable for user
-                password=os.environ.get("MYSQL_PASSWORD"),  # Use environment variable for password
-                database=os.environ.get("MYSQL_DATABASE", "ficticiousblogs")
+        try:                        
+            connection = pymssql.connect(
+                server=f"{server},{port}", 
+                user=username, 
+                password=password, 
+                database=database
             )
 
-            if connection.is_connected():
-                cursor = connection.cursor()
+            cursor = connection.cursor()
 
-                # SQL query to insert data
-                sql_insert_query = """
-                INSERT INTO users (email, password)
-                VALUES (%s, %s)
-                """
-                user_data = (email, password)
+            # SQL query to insert data
+            sql_insert_query = """
+            INSERT INTO users (email, password)
+            VALUES (%s, %s)
+            """
+            user_data = (email, password)
 
-                # Execute the query
-                cursor.execute(sql_insert_query, user_data)
-                connection.commit()
-                print("User inserted successfully.")
+            # Execute the query
+            cursor.execute(sql_insert_query, user_data)
+            connection.commit()
+            print("User inserted successfully.")
 
-        except Error as e:
-            print("Error while connecting to MySQL:", e)
+        except pymssql.Error as e:
+            print("Error while connecting to SQL server:", e)
 
         finally:
             # Close the cursor and connection if they exist
             if 'cursor' in locals():
                 cursor.close()        
-            if connection.is_connected():            
+            if connection:            
                 connection.close()
-                print("MySQL connection is closed")
+                print("SQL server connection is closed")
 
     # Check if an email is already registered
     def is_email_registered(email):
-        try:
-            # Connect to the database
-            connection = mysql.connector.connect(
-                host=os.environ.get("MYSQL_HOST", "localhost"),  # Use environment variable for host
-                user=os.environ.get("MYSQL_USER", "codebind"),  # Use environment variable for user
-                password=os.environ.get("MYSQL_PASSWORD"),  # Use environment variable for password
-                database=os.environ.get("MYSQL_DATABASE", "ficticiousblogs")
-            )
+        try:                        
+            connection = pymssql.connect(
+                server=f"{server},{port}", 
+                user=username, 
+                password=password, 
+                database=database)
             
-            if connection.is_connected():
-                cursor = connection.cursor()
+            cursor = connection.cursor()
                 
-                # Query to check if the email exists in the users table
-                query = "SELECT COUNT(*) FROM users WHERE email = %s"
-                cursor.execute(query, (email,))
-                
-                # Fetch the result
-                result = cursor.fetchone()
-                return result[0] > 0  # True if email exists, False otherwise
+            # Query to check if the email exists in the users table
+            query = "SELECT COUNT(*) FROM users WHERE email = %s"
+            cursor.execute(query, (email,))
+            
+            # Fetch the result
+            result = cursor.fetchone()
+            return result[0] > 0  # True if email exists, False otherwise
 
-        except Error as e:
-            print("Error while connecting to MySQL:", e)
+        except pymssql.Error as e:
+            print("Error while connecting to SQL server:", e)
             return False  # Assume email doesn't exist if there's an error
 
         finally:
             # Close the cursor and connection if they exist
             if 'cursor' in locals():
                 cursor.close()
-            if connection.is_connected():
+            if connection:
                 connection.close()
+                print("SQL server connection is closed")
                 
     # Validate user login credential
     def validate_user(email, password):
-        try:
-            # Connect to the database
-            connection = mysql.connector.connect(
-                host=os.environ.get("MYSQL_HOST", "localhost"),  # Use environment variable for host
-                user=os.environ.get("MYSQL_USER", "codebind"),  # Use environment variable for user
-                password=os.environ.get("MYSQL_PASSWORD"),  # Use environment variable for password
-                database=os.environ.get("MYSQL_DATABASE", "ficticiousblogs")
-            )
+        connection = None  # Initialize connection as None
+        try:                        
+            connection = pymssql.connect(
+                server=f"{server},{port}", 
+                user=username, 
+                password=password, 
+                database=database)
             
-            if connection.is_connected():
-                cursor = connection.cursor()
+            cursor = connection.cursor()
                 
-                # Query to check if the email and password match
-                query = "SELECT password FROM users WHERE email = %s"
-                cursor.execute(query, (email,))
-                
-                # Fetch the stored password if the email exists
-                result = cursor.fetchone()
-                return result and result[0] == password
+            # Query to check if the email and password match
+            query = "SELECT password FROM users WHERE email = %s"
+            cursor.execute(query, (email,))
+            
+            # Fetch the stored password if the email exists
+            result = cursor.fetchone()
+            return result and result[0] == password
 
-        except Error as e:
-            print("Error while connecting to MySQL:", e)
+        except pymssql.Error as e:
+            print("Error while connecting to SQL server:", e)
             return False  # Assume login fails if there's an error
 
         finally:
             # Close the cursor and connection if they exist
             if 'cursor' in locals():
                 cursor.close()
-            if connection.is_connected():
+            if connection is not None:
                 connection.close()
+                print("SQL server connection is closed")
 
     # Display a detailed post
     def get_post_by_id(post_id):
-        try:
-            # Connect to the MySQL database
-            connection = mysql.connector.connect(
-                host=os.environ.get("MYSQL_HOST", "localhost"),  # Use environment variable for host
-                user=os.environ.get("MYSQL_USER", "codebind"),  # Use environment variable for user
-                password=os.environ.get("MYSQL_PASSWORD"),  # Use environment variable for password
-                database=os.environ.get("MYSQL_DATABASE", "ficticiousblogs")
-            )
+        try:                        
+            connection = pymssql.connect(
+                server=f"{server},{port}", 
+                user=username, 
+                password=password, 
+                database=database)
 
-            if connection.is_connected():
-                cursor = connection.cursor()
+            cursor = connection.cursor()
 
-                # Define the query to fetch the post by ID
-                query = "SELECT title, content, email, date FROM entries WHERE id = %s"
-                cursor.execute(query, (post_id,))
-                
-                # Fetch the result
-                post = cursor.fetchone()
-                return post
+            # Define the query to fetch the post by ID
+            query = "SELECT title, content, email, date FROM entries WHERE id = %s"
+            cursor.execute(query, (post_id,))
+            
+            # Fetch the result
+            post = cursor.fetchone()
+            return post
 
-        except Error as e:
-            print("Error while connecting to MySQL:", e)
+        except pymssql.Error as e:
+            print("Error while connecting to SQL server:", e)
             return None
 
         finally:
             # Close the cursor and connection if they exist
             if 'cursor' in locals():
                 cursor.close()
-            if connection.is_connected():
+            if connection:
                 connection.close()
+                print("SQL server connection is closed")
                 
     def generate_content_with_openai(title):
         try:
@@ -310,18 +307,16 @@ def create_app():
                 
         # Fetch all entries for display
         entries = fetch_entries()
-        return render_template("index.html", entries=entries, user_email=user_email)
-        
-    #   # Fetch and display entries on GET request
-    #   entries = fetch_entries()
-    #   return render_template("index.html", entries=entries, user_email=user_email) 
-
+        return render_template("index.html", entries=entries, user_email=user_email)        
+    
+    # Logout route
     @app.route("/logout", methods=["POST"])
     def logout():
         session.pop("email", None)
         flash("You have been logged out", "info")
         return redirect(url_for("login"))
 
+    # Posts route
     @app.route("/post/<int:post_id>")
     def post(post_id):
         if "email" not in session:
@@ -340,9 +335,6 @@ def create_app():
             return redirect(url_for("home"))
 
     if __name__ == "__main__":    
-        # port = int(os.environ.get("PORT", 5000))  # Use Render's port or default to 5000
-        # app.run(host="0.0.0.0", port=port)
-        # app = create_app()
         app.run(debug=True)
 
     return app
